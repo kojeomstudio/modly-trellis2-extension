@@ -20,5 +20,6 @@
       "download_check": "pipeline.json",
       "description": "4B-parameter O-Voxel diffusion model for high-fidelity image-to-3D with PBR textures (~24GB VRAM)"
     }
-  ]
+  ],
+  "signature": "6ETydIwy7nk1fvvOvsViqBFg9ORio/sQDwyjLbmeCgYnZkrIyAqPcLg/YoyMVaxrvIdIy5KRQKVWjQ1S1R8nCA=="
 }
