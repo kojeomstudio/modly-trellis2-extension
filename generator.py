@@ -171,6 +171,16 @@ class Trellis2Generator(BaseGenerator):
                 "Run 'python build_vendor.py' from the extension directory to build it."
             )
 
+        # Import torch first so it registers its DLL directory on Windows.
+        # Compiled CUDA extensions in vendor/ depend on torch DLLs — without
+        # this, Windows cannot find them even if the path is correct.
+        import torch  # noqa: F401
+
+        # Install large packages that cannot be vendored in git (pre-built wheels,
+        # no compilation required — just a pip download).
+        self._ensure_spconv(torch)
+        self._ensure_opencv()
+
         vendor_str = str(_VENDOR_DIR)
         if vendor_str not in sys.path:
             sys.path.insert(0, vendor_str)
@@ -183,10 +193,62 @@ class Trellis2Generator(BaseGenerator):
                 "Re-run 'python build_vendor.py' to rebuild it."
             ) from exc
 
+    def _ensure_spconv(self, torch) -> None:
+        """Install spconv via pip if not already available (pre-built wheel, no compilation)."""
+        try:
+            import spconv  # noqa: F401
+            return
+        except (ImportError, OSError):
+            pass
+
+        cuda_tag = "cu" + torch.version.cuda.replace(".", "")
+        fallbacks = [cuda_tag, "cu124", "cu122", "cu121", "cu120", "cu118"]
+        seen = []
+        for tag in fallbacks:
+            if tag in seen:
+                continue
+            seen.append(tag)
+            pkg = f"spconv-{tag}"
+            print(f"[Trellis2Generator] Installing {pkg} via pip...")
+            import subprocess
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", pkg],
+                capture_output=True, text=True
+            )
+            if result.returncode == 0:
+                print(f"[Trellis2Generator] {pkg} installed successfully.")
+                return
+        raise RuntimeError(
+            "[Trellis2Generator] Could not install spconv for any CUDA version. "
+            f"Tried: {seen}"
+        )
+
+    def _ensure_opencv(self) -> None:
+        """Install opencv-python via pip if not already available (pre-built wheel)."""
+        try:
+            import cv2  # noqa: F401
+            return
+        except (ImportError, OSError):
+            pass
+
+        print("[Trellis2Generator] Installing opencv-python via pip...")
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "opencv-python"],
+            capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                "[Trellis2Generator] Failed to install opencv-python:\n" + result.stderr
+            )
+        print("[Trellis2Generator] opencv-python installed successfully.")
+
     def _setup_env(self) -> None:
         """Set environment variables required by TRELLIS.2 before first import."""
         os.environ.setdefault("OPENCV_IO_ENABLE_OPENEXR", "1")
         os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+        # flex_gemm is not available on PyPI — use spconv as conv backend instead.
+        os.environ.setdefault("SPARSE_CONV_BACKEND", "spconv")
 
     # ------------------------------------------------------------------ #
     # UI schema
