@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: cumesh
+Version: 0.1.0
+Summary: cuMesh
+Author: Congjie He
+Author-email: congjiehe95@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: python (>=3.8)
+
+# cuMesh
+cuMesh:
+

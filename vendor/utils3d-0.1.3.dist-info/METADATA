@@ -1,0 +1,65 @@
+Metadata-Version: 2.1
+Name: utils3d
+Version: 0.1.3
+Summary: A package for 3D utilities!
+License: MIT
+Author: Kalash Jain
+Requires-Python: >=3.8,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: addict
+Requires-Dist: matplotlib (>=3)
+Requires-Dist: numpy (>1.18)
+Requires-Dist: open3d (>=0.13.0,<0.14.0)
+Requires-Dist: pandas (>=1.0)
+Requires-Dist: pillow (>=9.3.0)
+Requires-Dist: pyquaternion
+Requires-Dist: pyyaml (>=5.4.1)
+Requires-Dist: scikit-learn (>=0.21)
+Requires-Dist: tqdm
+Description-Content-Type: text/markdown
+
+# utils3d
+
+This Python package provides a collection of utilities for working with 3D data!
+
+## Installation
+
+```bash
+$ pip install utils3d
+```
+
+## Usage
+
+`utils3d` can be used to perform various actions on your 3d data. One of them is converting the 3D point cloud data into a 2D depth image and that can be achieved as follows:
+```python
+from utils3d.pctodepthimage import pctodepthimage
+
+path = "pointclouds/um_000000.pcd" # path to your point cloud file
+extrinsics = [] # 3x4 numpy array containing the extrinsic parameters (dummy available in tests/test_utils3d.py)
+intrinsics = [] # 3x3 numpy array containing the intrinsic parameters (dummy available in tests/test_utils3d.py)
+height = 512 # height of your depth image
+width = 1382 # width of your depth image
+scaling_factor = 0.15 # scaling factor manipulates the intensity of the pixels of your image
+
+depth_image = pctodepthimage(path, extrinsics, intrinsics, height, width, scaling_factor)
+depth_image.show()
+```
+
+## Contributing
+
+Interested in contributing? Check out the contributing guidelines. Please note that this project is released with a Code of Conduct. By contributing to this project, you agree to abide by its terms.
+
+## License
+
+`utils3d` was created by Kalash Jain. It is licensed under the terms of the MIT license.
+
+## Credits
+
+`utils3d` was created with [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/) and the `py-pkgs-cookiecutter` [template](https://github.com/py-pkgs/py-pkgs-cookiecutter).
+

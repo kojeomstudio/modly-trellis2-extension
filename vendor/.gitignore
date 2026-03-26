@@ -1,0 +1,13 @@
+# Too large for GitHub (>100MB) — installed at runtime via pip
+spconv/
+spconv_cu*/
+spconv*/
+
+# OpenCV — installed at runtime via pip
+cv2/
+opencv_python*/
+opencv_python-*.dist-info/
+
+# Compiled pycache — platform-specific, not portable
+__pycache__/
+*.pyc
