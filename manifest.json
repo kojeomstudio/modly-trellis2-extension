@@ -13,6 +13,10 @@
     "pbr",
     "diffusion"
   ],
+  "compatibility": {
+    "platforms": ["win32", "linux"],
+    "requires_cuda": true
+  },
   "nodes": [
     {
       "id": "trellis-2",
